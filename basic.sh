@@ -5,6 +5,33 @@ VMDIR=$PWD
 OVMF=$VMDIR/firmware
 #export QEMU_AUDIO_DRV=pa
 #QEMU_AUDIO_DRV=pa
+br=mcbridge
+tp=mctap
+nw=mcnet
+cleanup(){
+          nmcli connection del $br $tp $nw
+          killall dhclient
+}
+trap cleanup EXIT
+
+
+#BRIDGED NETWORKING
+nmcli connection add type bridge ifname br1 con-name $br
+nmcli connection add type bridge-slave ifname eno1 con-name $nw master br1
+nmcli connection add type tun ifname tap0 con-name $tp mode tap owner $(id -u)
+nmcli connection mod $tp connection.slave-type bridge connection.master br1
+nmcli con up $nw
+nmcli con up $br
+nmcli con up $tp
+dhclient br1
+nmcli connection show
+NET="-netdev tap,id=net0,ifname=tap0,script=no,downscript=no"
+#NET="-netdev user,id=mynet0 -device rtl8139,netdev=mynet0"
+#NET="-netdev tap,id=net0,ifname=tap0,netdev=net0"
+
+NDV="-device vmxnet3,netdev=net0,id=net0,mac=52:54:00:c9:18:27"
+#NDV="-device rtl8139,netdev=net0,id=net0,mac=52:54:00:c9:18:27"
+#NDV= ""
 
 qemu-system-x86_64 \
     -enable-kvm \
@@ -19,8 +46,10 @@ qemu-system-x86_64 \
     -vga qxl \
     -device ich9-intel-hda -device hda-output \
     -usb -device usb-kbd -device usb-mouse \
+    $NET \
+    $NDV \
     -netdev user,id=net0 \
-    -device e1000-82545em,netdev=net0,id=net0,mac=52:54:00:c9:18:27 \
+    -device e1000e,netdev=net0,id=net0,mac=52:54:00:c9:18:27 \
     -device ich9-ahci,id=sata \
     -drive id=ESP,if=none,format=qcow2,file=ESP.qcow2 \
     -device ide-hd,bus=sata.2,drive=ESP \
