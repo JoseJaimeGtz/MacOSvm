@@ -89,13 +89,17 @@ case $arg in
 	cd macOS-Simple-KVM
 	sudo ./jumpstart.sh
 	sudo qemu-img create -f qcow2 macOS.qcow2 50G
-	sudo rm -rf basic.sh make.sh /tools/template.xml.in
 	sudo cd $ACTPATH
+	sudo chmod ugo+rx basic.sh
+	sudo chmod ugo+rx make.sh
 	sudo cp basic.sh /opt/MacOSvm/macOS-Simple-KVM
 	sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
 	sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
+	cd /opt/MacOSvm/macOS-Simple-KVM
+	sudo ./basic.sh
 	sudo ./make.sh --add macOS-Simple-KVM $RAM
 	sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
+	;;
   *)
 	print_usage
 	;;
