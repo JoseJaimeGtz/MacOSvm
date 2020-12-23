@@ -10,7 +10,6 @@ print_usage() {
     echo "USAGE :"
     echo
     echo "first parameter"
-    echo "-f if you dont have a vm created by this script"
     echo "-c if you want to create a vm"
     echo "-d if you want to delete a vm"
     echo
@@ -38,10 +37,29 @@ print_usage() {
 arg="$1"
 case $arg in
   -c)
-	if [ ! -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]
+	if [ [ ! -e "/opt/MacOSvm" ] || [ ! -e "/opt/MacOSvm/macOS-Simple-KVM" ] ] && [ ! -z "$2" ]
 	then
-	  echo "Default VM Created!"
-	  let RAM=5*1048576
+		cd /opt
+		let RAM=4*1048576
+		sudo mkdir MacOSvm
+		cd MacOSvm
+		sudo git clone https://github.com/foxlet/macOS-Simple-KVM.git
+		cd macOS-Simple-KVM
+		sudo ./jumpstart.sh
+		sudo qemu-img create -f qcow2 macOS.qcow2 120G
+		sudo cd $ACTPATH
+		sudo chmod ugo+rx basic.sh
+		sudo chmod ugo+rx make.sh
+		sudo cp basic.sh /opt/MacOSvm/macOS-Simple-KVM
+		sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
+		sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
+		cd /opt/MacOSvm/macOS-Simple-KVM
+		sudo ./make.sh --add macOS-Simple-KVM $RAM
+		sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
+		echo "First VM created"
+	elif [ ! -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]
+	then
+	  let RAM=4*1048576
 	  if [ ! -e "/opt/MacOSvm/$NAME" ]
 	  then
 	    sudo cp -r /opt/MacOSvm/macOS-Simple-KVM /opt/MacOSvm/$NAME
@@ -49,10 +67,10 @@ case $arg in
 	  cd /opt/MacOSvm/$NAME
 	  sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 	  sudo ./make.sh --add $NAME $RAM
+	  echo "Default VM Created!"
 	elif [ ! -z "$3" ] && [ ! -z "$4" ]
 	then
-	  echo "New VM Created!"
-	  let RAM=$3*1048579
+	  let RAM=$3*1048576
 	  if [ ! -e "/opt/MacOSvm/$NAME" ]
 	  then
 	    sudo cp -r /opt/MacOSvm/macOS-Simple-KVM /opt/MacOSvm/$NAME
@@ -62,6 +80,7 @@ case $arg in
 	  sudo rm -rf macOS.qcow2
 	  qemu-img create -f qcow2 macOS.qcow2 ${MEM}G
 	  sudo ./make.sh --add $NAME $RAM
+	  echo "New VM Created!"
 	else
 	  print_usage
 	fi
@@ -78,25 +97,6 @@ case $arg in
 	else
 	  print_usage
 	fi
-	;;
-  -f)
-	let RAM=5*1048576
-	cd /opt
-	sudo mkdir MacOSvm
-	cd MacOSvm
-	sudo git clone https://github.com/foxlet/macOS-Simple-KVM.git
-	cd macOS-Simple-KVM
-	sudo ./jumpstart.sh
-	sudo qemu-img create -f qcow2 macOS.qcow2 50G
-	sudo cd $ACTPATH
-	sudo chmod ugo+rx basic.sh
-	sudo chmod ugo+rx make.sh
-	sudo cp basic.sh /opt/MacOSvm/macOS-Simple-KVM
-	sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
-	sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
-	cd /opt/MacOSvm/macOS-Simple-KVM
-	sudo ./make.sh --add macOS-Simple-KVM $RAM
-	sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 	;;
   *)
 	print_usage

@@ -1,7 +1,5 @@
 # MacOSvm Usage:
 ## first parameter
-`-f` if you dont have a vm created by this script
-
 `-c` if you want to create a vm
 
 `-d` if you want to delete a vm
