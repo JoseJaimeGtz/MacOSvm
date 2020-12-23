@@ -26,13 +26,12 @@ print_usage() {
     echo "size of VM RAM. Ex: 5"
     echo
     echo "Output expected:"
-    echo
-    echo "sudo ./CreateVM.sh -c MacOSvm 100 15"
+    echo "sudo ./CreateMacOSvm.sh -c MacOSvm 100 5"
     echo "OR"
-    echo "sudo ./CreateVM.sh -c MacOSvm"
+    echo "sudo ./CreateMacOSvm.sh -c MacOSvm"
     echo
-    echo "Default Memory: 50"
-    echo "Default RAM: 10"
+    echo "Default Memory: 120G"
+    echo "Default RAM: 4G"
     exit=1
 }
 
@@ -96,7 +95,6 @@ case $arg in
 	sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
 	sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
 	cd /opt/MacOSvm/macOS-Simple-KVM
-	sudo ./basic.sh
 	sudo ./make.sh --add macOS-Simple-KVM $RAM
 	sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 	;;

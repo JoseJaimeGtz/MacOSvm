@@ -1,9 +1,0 @@
-network
-
-<interface type="network">
-  <mac address="52:54:00:50:f8:d3"/>
-  <source network="default"/>
-  <model type="e1000e"/>
-  <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
-</interface>
-
