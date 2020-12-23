@@ -54,7 +54,7 @@ case $arg in
 		sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
 		sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
 		cd /opt/MacOSvm/macOS-Simple-KVM
-		sudo ./make.sh --add macOS-Simple-KVM $RAM
+		sudo ./make.sh --add $NAME $RAM
 		sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 		echo "First VM created"
 	elif [ ! -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]
