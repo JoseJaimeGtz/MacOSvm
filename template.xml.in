@@ -50,17 +50,11 @@
     <controller type='sata' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
     </controller>
-    <interface type="network">
-      <mac address="52:54:00:50:f8:d3"/>
-      <source network="default"/>
-      <model type="e1000e"/>
-      <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
-    </interface>
-    <interface type="network">
-      <mac address="52:54:00:aa:ee:cc"/>
-      <source network="default"/>
-      <model type="virtio"/>
-      <address type="pci" domain="0x0000" bus="0x04" slot="0x00" function="0x0"/>
+    <interface type='network'>
+      <mac address='52:54:00:92:d4:7b'/>
+      <source network='default'/>
+      <model type='vmxnet3'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x00' function='0x0'/>
     </interface>
     <input type='mouse' bus='usb'>
       <address type='usb' bus='0' port='1'/>
