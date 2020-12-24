@@ -37,8 +37,10 @@ print_usage() {
 arg="$1"
 case $arg in
   -c)
-	if [ [ ! -e "/opt/MacOSvm" ] || [ ! -e "/opt/MacOSvm/macOS-Simple-KVM" ] ] && [ ! -z "$2" ]
+	if ( [ ! -e "/opt/MacOSvm" ] || [ ! -e "/opt/MacOSvm/macOS-Simple-KVM" ] ) && [ ! -z "$2" ]
 	then
+		sudo chmod ugo+rx basic.sh
+		sudo chmod ugo+rx make.sh
 		cd /opt
 		let RAM=4*1048576
 		sudo mkdir MacOSvm
@@ -47,16 +49,18 @@ case $arg in
 		cd macOS-Simple-KVM
 		sudo ./jumpstart.sh
 		sudo qemu-img create -f qcow2 macOS.qcow2 120G
-		sudo cd $ACTPATH
-		sudo chmod ugo+rx basic.sh
-		sudo chmod ugo+rx make.sh
+		sudo rm -rf basic.sh
+		sudo rm -rf make.sh
+		cd tools
+		sudo rm -rf template.xml.in
+		cd $ACTPATH
 		sudo cp basic.sh /opt/MacOSvm/macOS-Simple-KVM
 		sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
 		sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
 		cd /opt/MacOSvm/macOS-Simple-KVM
 		sudo ./make.sh --add $NAME $RAM
 		sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
-		echo "First VM created"
+		echo "VM created"
 	elif [ ! -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]
 	then
 	  let RAM=4*1048576
@@ -86,11 +90,13 @@ case $arg in
 	fi
 	;;
   -d)
+	cd /opt/MacOSvm
 	if [ ! -z "$2" ]
 	then
-	  if [ ! -e "$2" ]
+	  if [ -e "$2" ]
 	  then
   	    echo "VM $NAME deleted"
+	    sudo rm -rf $NAME
 	  else
 	    echo "VM $NAME not found"
 	  fi
