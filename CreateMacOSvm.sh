@@ -95,8 +95,8 @@ case $arg in
 	then
 	  if [ -e "$2" ]
 	  then
+		sudo rm -rf $NAME
   	    echo "VM $NAME deleted"
-	    sudo rm -rf $NAME
 	  else
 	    echo "VM $NAME not found"
 	  fi
