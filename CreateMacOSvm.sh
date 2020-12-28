@@ -37,11 +37,11 @@ print_usage() {
 arg="$1"
 case $arg in
   -c)
-	if ( [ ! -e "/opt/MacOSvm" ] || [ ! -e "/opt/MacOSvm/macOS-Simple-KVM" ] ) && [ ! -z "$2" ]
+	if ( [ ! -e "/run/media/nishikawa/Nishikawa/MacOSvm" ] || [ ! -e "/run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM" ] ) && [ ! -z "$2" ]
 	then
 		sudo chmod ugo+rx basic.sh
 		sudo chmod ugo+rx make.sh
-		cd /opt
+		cd /run/media/nishikawa/Nishikawa
 		let RAM=4*1048576
 		sudo mkdir MacOSvm
 		cd MacOSvm
@@ -54,32 +54,32 @@ case $arg in
 		cd tools
 		sudo rm -rf template.xml.in
 		cd $ACTPATH
-		sudo cp basic.sh /opt/MacOSvm/macOS-Simple-KVM
-		sudo cp make.sh /opt/MacOSvm/macOS-Simple-KVM
-		sudo cp template.xml.in /opt/MacOSvm/macOS-Simple-KVM/tools
-		cd /opt/MacOSvm/macOS-Simple-KVM
+		sudo cp basic.sh /run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM
+		sudo cp make.sh /run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM
+		sudo cp template.xml.in /run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM/tools
+		cd /run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM
 		sudo ./make.sh --add $NAME $RAM
 		sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 		echo "VM created"
 	elif [ ! -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]
 	then
 	  let RAM=4*1048576
-	  if [ ! -e "/opt/MacOSvm/$NAME" ]
+	  if [ ! -e "/run/media/nishikawa/Nishikawa/MacOSvm/$NAME" ]
 	  then
-	    sudo cp -r /opt/MacOSvm/macOS-Simple-KVM /opt/MacOSvm/$NAME
+	    sudo cp -r /run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM /run/media/nishikawa/Nishikawa/MacOSvm/$NAME
 	  fi
-	  cd /opt/MacOSvm/$NAME
+	  cd /run/media/nishikawa/Nishikawa/MacOSvm/$NAME
 	  sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 	  sudo ./make.sh --add $NAME $RAM
 	  echo "Default VM Created!"
 	elif [ ! -z "$3" ] && [ ! -z "$4" ]
 	then
 	  let RAM=$3*1048576
-	  if [ ! -e "/opt/MacOSvm/$NAME" ]
+	  if [ ! -e "/run/media/nishikawa/Nishikawa/MacOSvm/$NAME" ]
 	  then
-	    sudo cp -r /opt/MacOSvm/macOS-Simple-KVM /opt/MacOSvm/$NAME
+	    sudo cp -r /run/media/nishikawa/Nishikawa/MacOSvm/macOS-Simple-KVM /run/media/nishikawa/Nishikawa/MacOSvm/$NAME
 	  fi
-	  cd /opt/MacOSvm/$NAME
+	  cd /run/media/nishikawa/Nishikawa/MacOSvm/$NAME
 	  sudo git checkout -- firmware/OVMF_VARS-1024x768.fd
 	  sudo rm -rf macOS.qcow2
 	  qemu-img create -f qcow2 macOS.qcow2 ${MEM}G
@@ -90,7 +90,7 @@ case $arg in
 	fi
 	;;
   -d)
-	cd /opt/MacOSvm
+	cd /run/media/nishikawa/Nishikawa/MacOSvm
 	if [ ! -z "$2" ]
 	then
 	  if [ -e "$2" ]
